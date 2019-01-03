@@ -1007,7 +1007,7 @@ __mutex_lock_common(struct mutex *lock, long state, unsigned int subclass,
 		 * against mutex_unlock() and wake-ups do not go missing.
 		 */
 		//#ifdef VENDOR_EDIT fangpan@Swdp.shanghai,2015/11/12
-		if (unlikely(signal_pending_state(state, current)) ||
+		if (signal_pending_state(state, current) ||
 			hung_long_and_fatal_signal_pending(current)) {
 		//#endif
 			ret = -EINTR;

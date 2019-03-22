@@ -70,15 +70,12 @@ extern struct rw_semaphore *rwsem_downgrade_wake(struct rw_semaphore *sem);
 #include <linux/oppocfs/oppo_cfs_rwsem.h>
 #endif
 
-/* Include the arch specific part */
-#include <asm/rwsem.h>
-
-/* In all implementations count != 0 means locked */
 static inline int rwsem_is_locked(struct rw_semaphore *sem)
 {
 	return atomic_long_read(&sem->count) != 0;
 }
 
+#define RWSEM_UNLOCKED_VALUE		0L
 #if defined(VENDOR_EDIT) && defined(CONFIG_PROCESS_RECLAIM)
 /* Kui.Zhang@PSW.BSP.Kernel.Performance, 2019-05-23,
  * If count < 0 means write sem locked

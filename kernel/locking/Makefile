@@ -5,7 +5,7 @@ KCOV_INSTRUMENT		:= n
 UBSAN_SANITIZE_lockdep.o	:= n
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/include
 subdir-ccflags-y += -I$(srctree)/kernel/sched/
-obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o rwsem-xadd.o
+obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
 
 ifdef CONFIG_FUNCTION_TRACER
 CFLAGS_REMOVE_lockdep.o = $(CC_FLAGS_FTRACE)

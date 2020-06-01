@@ -60,7 +60,9 @@ int __init mtk_acao_cpuidle_init(void)
 	 * idle states suspend back-end specific data
 	 */
 	for_each_possible_cpu(cpu) {
+		cpuidle_set_idle_cpu(dev->cpu);
 		ret = arm_cpuidle_init(cpu);
+		cpuidle_clear_idle_cpu(dev->cpu);
 
 		/*
 		 * Skip the cpuidle device initialization if the reported

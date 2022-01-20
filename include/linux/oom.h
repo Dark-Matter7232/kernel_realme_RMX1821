@@ -129,8 +129,8 @@ extern int sysctl_panic_on_oom;
 
 #else /* defined(CONFIG_DISABLE_OOM_KILLER) */
 
-static struct mutex oom_lock;
-static struct mutex oom_adj_mutex;
+static __maybe_unused struct mutex oom_lock;
+static __maybe_unused struct mutex oom_adj_mutex;
 
 static inline void __oom_reap_task_mm(struct mm_struct *mm)
 {

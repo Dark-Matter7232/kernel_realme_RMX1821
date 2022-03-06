@@ -44,8 +44,8 @@ struct oom_control {
 	unsigned long chosen_points;
 };
 
-static __maybe_unused struct mutex oom_lock;
-static __maybe_unused struct mutex oom_adj_mutex;
+extern struct mutex oom_lock;
+extern struct mutex oom_adj_mutex;
 
 static inline void set_current_oom_origin(void)
 {

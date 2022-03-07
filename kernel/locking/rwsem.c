@@ -417,10 +417,10 @@ void __init_rwsem(struct rw_semaphore *sem, const char *name,
 #ifdef CONFIG_RWSEM_PRIO_AWARE
 	sem->m_count = 0;
 #endif
-#ifdef VENDOR_EDIT
-// Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for ui first
-    sem->ux_dep_task = NULL;
-#endif
+// #ifdef VENDOR_EDIT
+// // Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for ui first
+//     sem->ux_dep_task = NULL;
+// #endif
 }
 EXPORT_SYMBOL(__init_rwsem);
 
@@ -1057,12 +1057,12 @@ queue:
 		    (adjustment & RWSEM_FLAG_WAITERS || is_first_waiter)))
 		rwsem_mark_wake(sem, RWSEM_WAKE_ANY, &wake_q);
 
-#ifdef VENDOR_EDIT
-// Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for ui first
-    if (sysctl_uifirst_enabled) {
-        rwsem_dynamic_ux_enqueue(current, waiter.task, READ_ONCE(sem->owner), sem);
-    }
-#endif
+// #ifdef VENDOR_EDIT
+// // Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for ui first
+//     if (sysctl_uifirst_enabled) {
+//         rwsem_dynamic_ux_enqueue(current, waiter.task, READ_ONCE(sem->owner), sem);
+//     }
+// #endif
 
 	raw_spin_unlock_irq(&sem->wait_lock);
 	wake_up_q(&wake_q);
@@ -1131,16 +1131,16 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
 	/* account for this before adding a new element to the list */
 	wstate = list_empty(&sem->wait_list) ? WRITER_FIRST : WRITER_NOT_FIRST;
 
-#if defined(VENDOR_EDIT) && defined(CONFIG_OPPO_VIP_THREAD)
-// Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for vip thread
-	rwsem_list_add(tsk, &waiter.list, &sem->wait_list);
-#else
+// #if defined(VENDOR_EDIT) && defined(CONFIG_OPPO_VIP_THREAD)
+// // Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for vip thread
+// 	rwsem_list_add(tsk, &waiter.list, &sem->wait_list);
+// #else
 	/*
 	 * is_first_waiter == true means we are first in the queue,
 	 * so there is no read locks that were queued ahead of us.
 	 */
 	is_first_waiter = rwsem_list_add_per_prio(&waiter, sem);
-#endif
+// #endif
 
 	/* we're now waiting on the lock */
 	if (wstate == WRITER_NOT_FIRST) {
@@ -1174,12 +1174,12 @@ rwsem_down_write_slowpath(struct rw_semaphore *sem, int state)
 	} else {
 		atomic_long_or(RWSEM_FLAG_WAITERS, &sem->count);
 	}
-#ifdef VENDOR_EDIT
-// Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for ui first
-    if (sysctl_uifirst_enabled) {
-        rwsem_dynamic_ux_enqueue(waiter.task, current, READ_ONCE(sem->owner), sem);
-    }
-#endif
+// #ifdef VENDOR_EDIT
+// // Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for ui first
+//     if (sysctl_uifirst_enabled) {
+//         rwsem_dynamic_ux_enqueue(waiter.task, current, READ_ONCE(sem->owner), sem);
+//     }
+// #endif
 
 wait:
 	/* wait until we successfully acquire the lock */
@@ -1283,12 +1283,12 @@ static struct rw_semaphore *rwsem_wake(struct rw_semaphore *sem)
 
 	if (!list_empty(&sem->wait_list))
 		rwsem_mark_wake(sem, RWSEM_WAKE_ANY, &wake_q);
-#ifdef VENDOR_EDIT
-// Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for ui first
-    if (sysctl_uifirst_enabled) {
-        rwsem_dynamic_ux_dequeue(sem, current);
-    }
-#endif
+// #ifdef VENDOR_EDIT
+// // Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for ui first
+//     if (sysctl_uifirst_enabled) {
+//         rwsem_dynamic_ux_dequeue(sem, current);
+//     }
+// #endif
 
 	raw_spin_unlock_irqrestore(&sem->wait_lock, flags);
 	wake_up_q(&wake_q);

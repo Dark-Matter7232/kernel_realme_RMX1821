@@ -12,7 +12,7 @@ ORIGIN_DIR=$(pwd)
 BUILD_PREF_COMPILER='clang'
 BUILD_PREF_COMPILER_VERSION='proton'
 TOOLCHAIN=$(pwd)/build-shit/toolchain
-IMAGE=$(pwd)/out/arch/arm64/boot/Image
+IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
 # export environment variables
 export_env_vars() {
     export KBUILD_BUILD_USER=Const
@@ -73,14 +73,14 @@ verify_toolchain_install() {
     fi
 }
 build_kernel_image() {
-    #cleanup
+    cleanup
     script_echo " "
     echo -e "${GRN}"
     read -p "Write the Kernel version: " KV
     echo -e "${YELLOW}"
-    script_echo 'Building CosmicFresh Kernel For M21'
-    make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) LOCALVERSION="—CosmicFresh-R$KV" RMX1821_defconfig 2>&1 | sed 's/^/     /'
-    make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) LOCALVERSION="—CosmicFresh-R$KV" 2>&1 | sed 's/^/     /'
+    script_echo 'Building CosmicFresh Kernel For RMX1821'
+    make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) LOCALVERSION="—CosmicFresh-RMX1821-R$KV" RMX1821_defconfig 2>&1 | sed 's/^/     /'
+    make -C $(pwd) CC=${BUILD_PREF_COMPILER} AR=llvm-ar NM=llvm-nm OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump STRIP=llvm-strip -j$((`nproc`+1)) LOCALVERSION="—CosmicFresh-RMX1821-R$KV" 2>&1 | sed 's/^/     /'
     SUCCESS=$?
     echo -e "${RST}"
 
@@ -89,9 +89,9 @@ build_kernel_image() {
         echo -e "${GRN}"
         script_echo "------------------------------------------------------------"
         script_echo "Compilation successful..."
-        script_echo "Image can be found at out/arch/arm64/boot/Image"
+        script_echo "Image can be found at out/arch/arm64/boot/Image.gz-dtb"
         script_echo  "------------------------------------------------------------"
-        #build_flashable_zip
+        build_flashable_zip
     elif [ $SUCCESS -eq 130 ]
     then
         echo -e "${RED}"
@@ -109,25 +109,23 @@ build_kernel_image() {
         cleanup
     fi
 }
-# build_flashable_zip() {
-#     script_echo " "
-#     script_echo "I: Building kernel image..."
-#     echo -e "${GRN}"
-#     cp $(pwd)/out/arch/arm64/boot/{Image,dtb_exynos.img,dtbo_exynos.img} CosmicFresh/
-#     mv CosmicFresh/dtb_exynos.img CosmicFresh/dtb
-#     mv CosmicFresh/dtbo_exynos.img CosmicFresh/dtbo.img
-#     cd $(pwd)/CosmicFresh/
-#     zip -r9 "CosmicFresh-R$KV.zip" anykernel.sh META-INF tools version Image dtb dtbo.img
-#     rm -rf {Image,dtb,dtbo.img}
-#     cd ../
-# }
+build_flashable_zip() {
+    script_echo " "
+    script_echo "I: Building kernel image..."
+    echo -e "${GRN}"
+    cp $(pwd)/out/arch/arm64/boot/Image.gz-dtb CosmicFresh-RMX1821/
+    cd $(pwd)/CosmicFresh-RMX1821/
+    zip -r9 "CosmicFresh-RMX1821-R$KV.zip" *
+    rm -rf Image.gz-dtb
+    cd ../
+}
 
-# cleanup() {
-#     cd $(pwd)/CosmicFresh/
-#     rm -rf {Image,*.zip,dtb,dtbo.img}
-#     cd ../
-#     rm -rf $(pwd)/out/arch/arm64/boot/*
-# }
+cleanup() {
+    cd $(pwd)/CosmicFresh-RMX1821/
+    rm -rf {Image.gz-dtb,*.zip}
+    cd ../
+    rm -rf $(pwd)/out/arch/arm64/boot/*
+}
 add_deps
 export_env_vars
 build_kernel_image

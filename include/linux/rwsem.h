@@ -111,7 +111,7 @@ static inline int rwsem_is_wlocked(struct rw_semaphore *sem)
 #ifdef CONFIG_RWSEM_SPIN_ON_OWNER
 #ifdef VENDOR_EDIT
 // Liujie.Xie@TECH.Kernel.Sched, 2019/05/22, add for ui first
-#define __RWSEM_OPT_INIT(lockname) , .osq = OSQ_LOCK_UNLOCKED, .owner = NULL, .ux_dep_task = NULL
+#define __RWSEM_OPT_INIT(lockname) , .osq = OSQ_LOCK_UNLOCKED, .owner = ATOMIC_LONG_INIT(0), .ux_dep_task = NULL
 #else /* VENDOR_EDIT */
 #define __RWSEM_OPT_INIT(lockname) , .osq = OSQ_LOCK_UNLOCKED, .owner = ATOMIC_LONG_INIT(0)
 #endif

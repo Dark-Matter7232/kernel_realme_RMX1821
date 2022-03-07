@@ -92,6 +92,7 @@
  * UtilEstimation. Use estimated CPU utilization.
  */
 #define SCHED_FEAT_UTIL_EST 1
+#define SCHED_FEAT_UTIL_EST_FASTUP 1
 
 /*
  * HMP scheduling. Use dynamic threshold depends on system load and

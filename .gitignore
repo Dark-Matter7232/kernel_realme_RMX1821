@@ -129,3 +129,5 @@ kernel/configs/android-*.cfg
 # Object directory
 out/
 build-shit
+CosmicFresh-RMX1821/CosmicFresh-RMX1821-R*
+CosmicFresh-RMX1821/Image.gz-dtb

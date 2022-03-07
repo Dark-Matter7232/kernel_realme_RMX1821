@@ -92,7 +92,7 @@ int m4u_test_alloc_dealloc(int id, unsigned int size)
 		}
 	} else if (id == 3) {
 		down_write(&current->mm->mmap_sem);
-		va = do_mmap_pgoff(NULL, 0, size,
+		va = do_mmap(NULL, 0, size,
 			PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED,
 			0, &populate, NULL);
 		if (!va) {
@@ -132,7 +132,7 @@ static int m4u_test_map_kernel(void)
 	unsigned long populate;
 
 	down_write(&current->mm->mmap_sem);
-	va = do_mmap_pgoff(NULL, 0, size,
+	va = do_mmap(NULL, 0, size,
 		PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED,
 		0, &populate, NULL);
 	up_write(&current->mm->mmap_sem);
@@ -939,7 +939,7 @@ int m4u_debug_help_show(struct seq_file *s, void *unused)
 	M4U_PRINT_SEQ(s,
 		      "echo 7 > /d/m4u/debug:	map/unmap 4MB kernel space virtual buffer(vmalloc) to IOVA\n");
 	M4U_PRINT_SEQ(s,
-		      "echo 8 > /d/m4u/debug:	map/unmap 4MB user space virtual buffer(do_mmap_pgoff) to IOVA\n");
+		      "echo 8 > /d/m4u/debug:	map/unmap 4MB user space virtual buffer(do_mmap) to IOVA\n");
 	M4U_PRINT_SEQ(s,
 		      "echo 9 > /d/m4u/debug:	CCU domain: map/unmap the sg table(512 count of 4KB pages) to IOVA(aligned of 0x4000)\n");
 	M4U_PRINT_SEQ(s,

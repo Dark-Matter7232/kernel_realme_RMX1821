@@ -62,7 +62,7 @@ int m4u_test_alloc_dealloc(int id, unsigned int size)
 		}
 	} else if (id == 3) {
 		down_write(&current->mm->mmap_sem);
-		va = do_mmap_pgoff(NULL, 0, size,
+		va = do_mmap(NULL, 0, size,
 			PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED,
 			0, &populate, NULL);
 		up_write(&current->mm->mmap_sem);
@@ -204,7 +204,7 @@ static int m4u_test_map_kernel(void)
 	unsigned long populate = 0;
 
 	down_write(&current->mm->mmap_sem);
-	va = do_mmap_pgoff(NULL, 0, size,
+	va = do_mmap(NULL, 0, size,
 		PROT_READ | PROT_WRITE, MAP_SHARED | MAP_LOCKED,
 		0, &populate, NULL);
 	up_write(&current->mm->mmap_sem);
